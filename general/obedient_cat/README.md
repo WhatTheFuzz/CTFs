@@ -19,7 +19,7 @@ Hint #1 informs us how to interpret future hints and how to read our terminal.
 Specifically it tells us focus on the characters that come after the `$`. The 
 `$` (before a command) generally means that we are a regular user. Observe if 
 you log in as a superuser, or `root` user, that the `$` will instead be 
-replaced with a `#`. This comes from a POSIX standard and can we 
+replaced with a `#`. This comes from a POSIX standard and can be 
 [traced][superuser] to the Bourne shell introduced in Version 7 Unix in 1979. 
 The prompt value (whether `$`, `#`, or something else) can be found in the PS1 
 environment variable. You can view the value of that variable by pasting the 
