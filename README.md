@@ -7,7 +7,7 @@ are geared towards individuals who already have a solid understanding of how
 computers work. I figured I would combine these three aspects and attempt to 
 make write-ups for even simple challenges that walk through each step of my 
 thought process so others, who maybe don't have a computer background, can 
-learn from. If I fail at this, please post an issue or submit a merge request. 
+learn as well. If I fail at this, please post an issue or submit a merge request.
 I love working with others!
 
 Sign up for picoCTF [here][pico]!
