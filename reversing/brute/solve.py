@@ -13,6 +13,7 @@ Returns:
 from pwn import *
 import claripy
 import angr
+import time
 from sys import stdin
 
 exe = ELF("./brute")
@@ -33,7 +34,6 @@ def getflag():
             'arch':'i386',
             'entry_point':0x580,
             'base_addr':0x00
-
         }
     )
 
@@ -66,7 +66,11 @@ def getflag():
     find_addr  = 0x00a72 #  the address of "call puts" for SUCCESS
     avoid_addr = 0x00a86 # the address of "call puts" for FAILURE
     simgr = project.factory.simulation_manager(state)
+
+    # Just for kicks.
+    start_time = time.time()
     simgr.explore(find=find_addr, avoid=avoid_addr)
+    log.info(f'angr explored for {time.time()-start_time} seconds.')
 
     # We found an answer!
     if simgr.found:

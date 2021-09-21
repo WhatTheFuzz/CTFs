@@ -96,7 +96,52 @@ Hmm. So we will give the program some input, it looks to transform it and check 
 
 ### Dynamic Analysis
 
+Running the program we get:
 
+```shell
+$ ./brute
+input the flag: test
+checking solution...
+Incorrect.
+```
+
+Pretty simple, as we gathered from Ghidra. Let's check how long the flag should be by testing what is returned from the `strnlen` inside of `main`. To do that, we can start it with GDB, break on `strnlen`, give the program our input, and then call `finish` in GDB to return to the main function. The return value of `strnlen` will be in `$eax`. It should look something like:
+
+```shell
+break strnlen
+finish
+p/d $eax
+```
+
+Doing this, we observe a value of 30. That seems reasonable. Let's just make an educated guess right now that our flag is going to be 30 characters long. I think this is enough to get started with angr.
+
+## angr
+
+The first thing that we need to do is specify our project and executable. The options are optional and use_sim_procedures is on by default, but I like being explicit.
+
+```python
+# Create an angr project.
+project = angr.Project('./brute',
+    use_sim_procedures=True,
+    main_opts={
+        'arch':'i386',
+        'entry_point':0x580,
+        'base_addr':0x00
+    }
+)
+```
+
+The entry_point is where the program starts execution. The base address is where the program asks to be loaded into memory by the dynamic loader. You can find these both with `readelf --headers`. See below.
+
+```shell
+$ readelf --headers
+...
+Entry point address:               0x580
+...
+[Requesting program interpreter: /lib/ld-linux.so.2]
+LOAD           0x000000 0x00000000 0x00000000 0x00dbc 0x00dbc R E 0x1000
+...
+```
 
 [ret]: https://www.ctfwriteup.com/picoctf/picoctf-2021/picoctf-2021-reverse-engineering
 [angr]: https://angr.io/
