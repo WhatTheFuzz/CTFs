@@ -70,8 +70,7 @@ def getflag():
 
     # We found an answer!
     if simgr.found:
-        for found in simgr.found:
-            return found.posix.dumps(stdin.fileno())
+        return simgr.found[0].posix.dumps(stdin.fileno())
 
     # The case were we did not find anything.
     return b''
