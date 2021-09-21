@@ -13,6 +13,7 @@ Returns:
 from pwn import *
 import claripy
 import angr
+from sys import stdin
 
 exe = ELF("./brute")
 
@@ -32,6 +33,7 @@ def getflag():
             'arch':'i386',
             'entry_point':0x580,
             'base_addr':0x00
+
         }
     )
 
@@ -48,6 +50,12 @@ def getflag():
         stdin=angr.SimFile('/dev/stdin', content=flag),
         add_options=angr.options.unicorn
     )
+    # angr.options.unicorn is an un-hashable set of options and cannot be combined with the following booleans in the above add_options. This might be possible but my Python might just be rusty.
+    # Specify that unknown memory and register values at the beginning will be set to null.
+    state.options.update({
+            angr.options.ZERO_FILL_UNCONSTRAINED_MEMORY,
+            angr.options.ZERO_FILL_UNCONSTRAINED_REGISTERS
+    })
 
     # Constrain characters to be printable.
     for i in flag_chars:
@@ -60,9 +68,13 @@ def getflag():
     simgr = project.factory.simulation_manager(state)
     simgr.explore(find=find_addr, avoid=avoid_addr)
 
-    if (len(simgr.found) > 0):
+    # We found an answer!
+    if simgr.found:
         for found in simgr.found:
-            print(found.posix.dumps(0))
+            return found.posix.dumps(stdin.fileno())
+
+    # The case were we did not find anything.
+    return b''
 
 
 
@@ -78,20 +90,20 @@ def main():
     '''Return the flag.
     '''
 
-    r = conn()
-    #flag = getflag()
-    flag = b'picoCTF{I_5D3_A11DA7_e5458cbf}\n'
+    with conn() as r:
 
-    # Test the flag.
-    r.send(flag)
+        # Get the flag using angr.
+        flag = getflag()
 
-    # Ensure that this flag works.
-    data = r.recvline_containsS(b'Correct!')
-    assert('Correct!' in data)
-    r.close()
+        # Test the flag.
+        r.send(flag)
 
-    log.success(f'The flag is: {flag.decode("ascii")}')
-    return flag
+        # Ensure that this flag works.
+        data = r.recvline_containsS(b'Correct!')
+        assert('Correct!' in data)
+
+        log.success(f'The flag is: {flag.decode("ascii")}')
+        return flag
 
 
 if __name__ == "__main__":
