@@ -244,6 +244,5 @@ is realllllly slow). This was a great introduction and I want to thank
 [ret2basic][ret] for the great writeup that allowed me to learn some great
 techniques.
 
-[ret]:
-https://www.ctfwriteup.com/picoctf/picoctf-2021/picoctf-2021-reverse-engineering
+[ret]: https://www.ctfwriteup.com/picoctf/picoctf-2021/picoctf-2021-reverse-engineering
 [angr]: https://angr.io/
