@@ -38,7 +38,7 @@ def getflag():
     )
 
     # Specify the input the program.
-    # We know it can only be up to 0x200 characters, including the new line.
+    # We know it can only be up to 30 characters, excluding the new line.
     # https://www.ctfwriteup.com/picoctf/picoctf-2021/picoctf-2021-reverse-engineering
     flag_chars = [claripy.BVS('flag_%d' % i, 8) for i in range(FLAG_LEN)]
     # Add the new line.
