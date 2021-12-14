@@ -148,7 +148,7 @@ $ python3 ./solve.py
 
 ## Mitigations
 
-I won't even discuss exploitation mitigations since the develops purposefully
+I won't even discuss exploitation mitigations since the developers purposefully
 made `buf` RWX. :)
 
 [encoders]: https://docs.pwntools.com/en/stable/encoders.html
