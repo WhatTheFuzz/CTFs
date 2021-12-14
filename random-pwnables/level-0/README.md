@@ -143,7 +143,7 @@ flag = io.recvline()
 log.success(f"Flag: {flag}")
 ```
 
-## The Solution (with a caveat)
+## The Solution
 
 You should be able to run the script like so and get the flag!
 
