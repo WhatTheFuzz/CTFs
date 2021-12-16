@@ -143,7 +143,7 @@ flag = io.recvline()
 log.success(f"Flag: {flag}")
 ```
 
-## The Solution (with a caveat)
+## The Solution
 
 You should be able to run the script like so and get the flag!
 
@@ -155,5 +155,5 @@ $ python3 ./solve.py
 
 ## Mitigations
 
-I won't even discuss exploitation mitigations since the develops purposefully
+I won't even discuss exploitation mitigations since the developers purposefully
 made `buf` RWX. :)
