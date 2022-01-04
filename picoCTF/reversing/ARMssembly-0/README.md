@@ -13,7 +13,7 @@ We are given the following:
 * `1765227561` and `1830628817`: the arguments to pass to the program.
 
 ## Information Gathering
-sdf
+
 ### Hint #1
 
 > Simple compare
