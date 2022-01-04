@@ -36,7 +36,7 @@ def build_and_run_container():
     # Build the image from the Dockerfile in this directory.
     client.images.build(path='.', tag=IMAGE_NAME, quiet=False)
 
-    # Run the container.
+    # Run the container, the two numbers are provided by the challenge.
     stdout = client.containers.run(IMAGE_NAME, "/chall 1765227561 1830628817").decode('utf-8')
 
     # The program prints something to stdout in the form of:
