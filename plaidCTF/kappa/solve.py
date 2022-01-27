@@ -96,6 +96,8 @@ def catch_pokemon(io, pokemon):
         if pokemon is Pokemon.KAKUNA:
             choose_an_option(io, Battle.THROW_POKEBALL)
             name_pokemon(io, 'Danny Devito')
+
+        # If the pokemon is a Charizard, we have to weaken it first.
         elif pokemon is Pokemon.CHARIZARD:
             # Attacking it four times seems to always work.
             for i in range(0, 4):
@@ -103,6 +105,8 @@ def catch_pokemon(io, pokemon):
             # Catch it
             choose_an_option(io, Battle.THROW_POKEBALL)
             name_pokemon(io, 'Charlie Kelly')
+        else:
+            raise ValueError('Unknown Pokemon encountered.')
 
     # If we failed to find a pokemon, try again into the grass again.
     elif b'You failed to find any Pokemon!' in line:
