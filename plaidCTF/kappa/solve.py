@@ -17,13 +17,16 @@ Returns:
 
 from pwn import *
 from enum import IntEnum, Enum
+import platform
+import os
 
-exe = ELF("./kappa")
+exe = ELF("./kappa_patched")
 hook = ELF("./hook.so")
 
 context.binary = exe
 context.log_level = 'debug'
 context.terminal = ['gnome-terminal', '-e']
+context.delete_corefiles = True
 
 HEADER = '''
 Choose an Option:
@@ -63,6 +66,14 @@ class Pokemon(Enum):
     KAKUNA = 'Kakuna'
     CHARIZARD = 'Charizard'
 
+class Party(IntEnum):
+    '''Enum for the party.
+    '''
+    FIRST = 1
+    SECOND = 2
+    THIRD = 3
+    FOURTH = 4
+
 def conn():
     '''Establish the connection to the process, local or remote.
     '''
@@ -72,7 +83,12 @@ def conn():
 
     else:
         # LD_PRELOAD to prevent `sleep` from being called.
-        io = process([exe.path], env = {'LD_PRELOAD': hook.path})
+        # I couldn't get the hook to link properly on my arm64 Mac, hence the check.
+        if platform.processor() == 'i386':
+            env = {'LD_PRELOAD': hook.path}
+        else:
+            env = {''}
+        io = process([exe.path], env)
 
     return io
 
@@ -121,7 +137,23 @@ def catch_pokemon(io, pokemon):
 def choose_an_option(io, command):
     '''Send a command.
     '''
+    # Clean the tube; remove all buffered data.
+    # This prevents scenarios where the program has sent the data before we've
+    # recv'ed everything and that prevents the program from progressing.
+    io.clean()
     io.sendline(str(command.value).encode())
+
+def inspect_core(io):
+    '''Inspect the core.
+    '''
+    try:
+        core = io.corefile
+        log.info(f'The faulting address is {hex(core.fault_addr)}')
+
+        # Delete the core file.
+        os.remove(core.path)
+    except:
+        log.error('Failed to open core.')
 
 def main():
     '''Return the flag.
@@ -135,7 +167,17 @@ def main():
 
         # Catch a Charizard.
         catch_pokemon(io, Pokemon.CHARIZARD)
+
+        # Remove the third Pokemon from our party. I am not sure if the order is
+        # important yet, but I have observed the segfault when we release the
+        # third Pokemon.
+        choose_an_option(io, Party.THIRD)
+
+
+        # Change its artwork.
+        #choose_an_option(io, Choice.CHANGE_POKEMON_ARTWORK)
         io.interactive()
+        inspect_core(io)
 
 
 if __name__ == '__main__':
