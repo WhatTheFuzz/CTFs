@@ -86,7 +86,7 @@ def catch_pokemon(io, pokemon):
     '''
     # Walk into the grass until we find a Kakuna.
     choose_an_option(io, Choice.GO_INTO_GRASS)
-    line = io.recvuntil(('appears!'.encode(),
+    line = io.recvuntil((b'appears!',
                           b'You failed to find any Pokemon!'))
 
     # If we found that pokemon, catch it.
@@ -129,8 +129,12 @@ def main():
 
     with conn() as io:
 
-        catch_pokemon(io, Pokemon.CHARIZARD)
+        # Catch four Kakunas (we can only have five Pokemon).
+        for i in range(0, 4):
+            catch_pokemon(io, Pokemon.KAKUNA)
 
+        # Catch a Charizard.
+        catch_pokemon(io, Pokemon.CHARIZARD)
         io.interactive()
 
 
