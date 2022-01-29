@@ -223,13 +223,13 @@ void battle(pokemon_t enemyType){
 }
 void grass(){
     printf("%s\n", "You walk into the tall grass!");
-    sleep(1);
+    //sleep(1);
     printf("%s\n", ".");
-    sleep(1);
+    //sleep(1);
     printf("%s\n", ".");
-    sleep(1);
+    //sleep(1);
     printf("%s\n", ".");
-    sleep(1);
+    //sleep(1);
     battle_count++;
     if ((battle_count % 13) == 0){
         battle(CHARIZARD);
@@ -271,7 +271,7 @@ void heal(){
     if (choice == 1){
         heal_all_pokemon();
         printf("%s\n","Okay, I'll take your Pokemon for a few seconds.");
-        sleep(5);
+        //sleep(5);
         printf("%s\n","Your Pokemon are now healed. We hope to see you again.");
     }
     else {
@@ -354,7 +354,7 @@ void init_game() {
 int main(int argc, char ** argv){
     setvbuf(stdout, NULL, _IONBF, 0);
     setvbuf(stdin, NULL, _IONBF, 0);
-    sleep(1);
+    //sleep(1);
     init_game();
     print_welcome();
     while(1) {

