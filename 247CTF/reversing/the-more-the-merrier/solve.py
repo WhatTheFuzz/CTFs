@@ -1,15 +1,10 @@
 #!/usr/bin/env python3
 
 """
-WhatTheFuzz's submission for the <CTF> challenge <name>.
+WhatTheFuzz's submission for the 247CTF challenge The More the Merrier.
 
 This script can be used in the following manner:
-python3 ./solve.py <REMOTE/LOCAL>
-
-Args:
-    param1: LOCAL will operate locally on the user's machine.
-            REMOTE will connect to the CTF webserver and grab the flag.
-            If no parameter is specified, the program will default to LOCAL.
+python3 ./solve.py
 
 Returns:
     The flag to solve the challenge.
