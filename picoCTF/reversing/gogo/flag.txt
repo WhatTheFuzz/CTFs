@@ -1,0 +1,1 @@
+Flag is:  picoCTF{p1kap1ka_p1c05729981f}
