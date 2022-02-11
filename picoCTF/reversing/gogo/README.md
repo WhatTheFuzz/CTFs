@@ -61,3 +61,27 @@ if (ebx != 32)
 arg_c = 1
 return eax
 ```
+
+We grabbed both of those strings and `xor`ed them together using the following:
+
+```python
+a = get_string1()
+b = get_string2()
+
+# XOR the two strings together to get the result.
+return bytes([a[i] ^ b[i] for i in range(len(a))])
+```
+
+The result was `reverseengineericanbarelyforward`. When we entered that on the server, we were greeted with another prompt:
+
+```shell
+$ ./enter_password
+Enter Password: reverseengineericanbarelyforward
+=========================================
+This challenge is interrupted by psociety
+What is the unhashed key?
+```
+
+The only keys we saw were both the strings we entered above. We put `passwd` into a [rainbow table][crackstation] and got a hit for an md5 hash of `goldfish`. Entering this gave us the flag: `picoCTF{p1kap1ka_p1c05729981f}`
+
+[crackstation]: https://crackstation.net/
