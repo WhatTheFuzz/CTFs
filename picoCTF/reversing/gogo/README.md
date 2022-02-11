@@ -2,9 +2,11 @@
 
 ## Introduction
 
-The problem is 110 reversing engineering challenge from picoCTF. The description states:
+The problem is 110 reversing engineering challenge from picoCTF. The
+description states:
 
-> mmm this is a weird file... enter_password. There is a instance of the service running at `mercury.picoctf.net:35862`.
+> mmm this is a weird file... enter_password. There is a instance of the
+service running at `mercury.picoctf.net:35862`.
 
 ## Information Gathering
 
@@ -18,7 +20,8 @@ Then that's what we will do!
 
 861836f13e3d627dfa375bdb8389214e
 
-After printing 'Enter Password: ', it prompts for user input. Nothing is printed after. Looks pretty straight forward.
+After printing 'Enter Password: ', it prompts for user input. Nothing is
+printed after. Looks pretty straight forward.
 
 ```shell
 $ ./enter_password
@@ -27,7 +30,9 @@ Enter Password: test
 
 ### Static Analysis
 
-We opened the program in Binary Ninja and found a function `main.checkPassword`. It set up a string, `passwd` on the stack and passed it in to a subroutine with a string from the string table, `hardcoded`.
+We opened the program in Binary Ninja and found a function
+`main.checkPassword`. It set up a string, `passwd` on the stack and passed it
+in to a subroutine with a string from the string table, `hardcoded`.
 
 ```c
 char const passwd[0x21]
@@ -72,7 +77,8 @@ b = get_string2()
 return bytes([a[i] ^ b[i] for i in range(len(a))])
 ```
 
-The result was `reverseengineericanbarelyforward`. When we entered that on the server, we were greeted with another prompt:
+The result was `reverseengineericanbarelyforward`. When we entered that on the
+server, we were greeted with another prompt:
 
 ```shell
 $ ./enter_password
@@ -82,6 +88,8 @@ This challenge is interrupted by psociety
 What is the unhashed key?
 ```
 
-The only keys we saw were both the strings we entered above. We put `passwd` into a [rainbow table][crackstation] and got a hit for an md5 hash of `goldfish`. Entering this gave us the flag: `picoCTF{p1kap1ka_p1c05729981f}`
+The only keys we saw were both the strings we entered above. We put `passwd`
+into a [rainbow table][crackstation] and got a hit for an md5 hash of
+`goldfish`. Entering this gave us the flag: `picoCTF{p1kap1ka_p1c05729981f}`
 
 [crackstation]: https://crackstation.net/
