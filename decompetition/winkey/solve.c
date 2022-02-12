@@ -2,8 +2,11 @@
 #include <string.h>
 #include <stdint.h>
 
-int check(char * key){
+int ctoi(char c){
+  return c - 0x30;
+}
 
+int check(char * key){
     return 0;
 }
 
