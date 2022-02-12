@@ -191,3 +191,33 @@ block22:
   pop     rbp
   ret
 ```
+
+Ghidra decompiled it to the following:
+
+```c
+undefined8 main(int param_1,long param_2)
+
+{
+  int iVar1;
+  undefined8 uVar2;
+
+  if (param_1 < 2) {
+    puts("No key supplied?");
+    uVar2 = 0xffffffff;
+  }
+  else {
+    iVar1 = check(*(undefined8 *)(param_2 + 8));
+    if (iVar1 == -1) {
+      puts("Invalid Key :(");
+      uVar2 = 0xffffffff;
+    }
+    else {
+      puts("Access Granted!");
+      uVar2 = 0;
+    }
+  }
+  return uVar2;
+}
+```
+
+We got a pretty each 18% solution essentially copying Ghidra's decompiled code. The only tricky thing were the non-existent stack variables. The dissassembly gave it away, as each block `mov`'ed -1 or 0 into $eax as opposed to storing it in a stack variable, as Ghidra suggested. Next came the call to `check`.

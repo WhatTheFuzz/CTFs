@@ -17,14 +17,13 @@ int32_t main(int argc, char ** argv){
         return -1;
     }
     else{
-
-        c = check(argv[1]);
-        if (c == -1){
+        if (check(argv[1]) == -1){
             puts("Invalid Key :(");
             return -1;
         }
         else{
-            ret = 0;
+            puts("Access Granted!");
+            return 0;
         }
     }
     return ret;
