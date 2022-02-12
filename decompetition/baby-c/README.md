@@ -72,7 +72,7 @@ block7:
   ret
 ```
 
-When we looked at the disassembly, we could see that it looped though `getc`'ing user input and capitalizing the first character. The tricky part was the use of the ` __ctype_b_loc@plt.sec` in block 2. This function returns an `unsigned short int **` and places the result into `$rax`. The pointer points to an array that stores properties of each character. This is used by the functions in defined in `ctype.h` such as `isalpha` and `isspace`. I found a great guide to bit mask that each function uses against this properties array on [Github][ctype_b_loc] which I've copied below.
+When we looked at the disassembly, we could see that it looped though `getc`'ing user input and capitalized the first character. The tricky part was the use of the ` __ctype_b_loc@plt.sec` in block 2. This function returns an `unsigned short int **` and places the result into `$rax`. The pointer points to an array that stores properties of each character. This is used by the functions in defined in `ctype.h` such as `isalpha` and `isspace`. I found a great guide to the bit mask that each function uses against this properties array on [Github][ctype_b_loc] which I've copied below.
 
 ```c
 v3 = __ctype_b_loc();
@@ -141,5 +141,53 @@ int main(void){
 ```
 
 ![score](./resources/score.png)
+
+Taking a closer look at the disassembly, we saw the stack setting up space for 24 bytes with the instruction `SUB $RSP, 24`. We initially took this to mean three eight byte variables, but we noticed that the bool was only being used to `mov` one byte at a time, so we changed that to an `unsigned char` instead. We tried creating another `int` value and hoping that the stack word alignment would put us at 24 bytes, but that did not work.
+
+Iin the end, the only thing we found that got us closer to the disassembly was putting the call to `putc@plt` inside of each conditional. This gave us a score of 45% and the program below.
+
+```c
+#include <stdio.h>
+#include <ctype.h>
+#include <stdint.h>
+
+
+#define true 1
+#define false 0
+
+typedef unsigned char bool;
+
+int main(void){
+
+    uint32_t c;
+    bool first;
+
+    first = true;
+    while(true){
+        c = getc(stdin);
+        if (c == -1)
+            break;
+        if (!isspace(c)){
+            if (first){
+                c = toupper(c);
+                first = false;
+                putc(c, stdout);
+            }
+            else{
+                c = tolower(c);
+                putc(c, stdout);
+            }
+
+        }
+        else{
+            putc(c, stdout);
+            first = true;
+        }
+    }
+    return 0;
+}
+```
+
+![score2](./resources/score2.png)
 
 [ctype_b_loc]: https://xuanxuanblingbling.github.io/ctf/pwn/2020/05/19/calc/

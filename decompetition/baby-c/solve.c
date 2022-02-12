@@ -1,33 +1,39 @@
 #include <stdio.h>
 #include <ctype.h>
+#include <stdint.h>
+
 
 #define true 1
 #define false 0
 
-typedef int bool;
+typedef unsigned char bool;
 
 int main(void){
+
+    uint32_t c;
     bool first;
-    int n, c;
 
     first = true;
-    while(1){
-        if ((c = getc(stdin)) == -1)
+    while(true){
+        c = getc(stdin);
+        if (c == -1)
             break;
-
         if (!isspace(c)){
             if (first){
-                n = toupper(c);
+                c = toupper(c);
                 first = false;
+                putc(c, stdout);
             }
             else{
-                n = tolower(c);
+                c = tolower(c);
+                putc(c, stdout);
             }
-            putc(n, stdout);
+
         }
         else{
             putc(c, stdout);
             first = true;
         }
     }
+    return 0;
 }
