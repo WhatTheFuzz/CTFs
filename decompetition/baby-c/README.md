@@ -142,15 +142,17 @@ int main(void){
 
 ![score](./resources/score.png)
 
-Taking a closer look at the disassembly, we saw the stack setting up space for 24 bytes with the instruction `SUB $RSP, 24`. We initially took this to mean three eight byte variables, but we noticed that the bool was only being used to `mov` one byte at a time, so we changed that to an `unsigned char` instead. We tried creating another `int` value and hoping that the stack word alignment would put us at 24 bytes, but that did not work.
-
-Iin the end, the only thing we found that got us closer to the disassembly was putting the call to `putc@plt` inside of each conditional. This gave us a score of 45% and the program below.
+We noticed there were additional calls to `putc@plt` in the assembly, so we
+added another call inside each conditional. Additionally, we inspected the `je` and
+`jmp` instructions and determined that conditional that checked `first` was not
+nested inside of the `isspace()` conditional. The result was the assembly below.
+This was surprisingly close to the Binary Ninja decompiled result, so we should
+have just gone with that. :information_desk_person:
 
 ```c
 #include <stdio.h>
 #include <ctype.h>
 #include <stdint.h>
-
 
 #define true 1
 #define false 0
@@ -158,36 +160,51 @@ Iin the end, the only thing we found that got us closer to the disassembly was p
 typedef unsigned char bool;
 
 int main(void){
-
-    uint32_t c;
     bool first;
-
+    uint32_t c;
+    
     first = true;
     while(true){
         c = getc(stdin);
         if (c == -1)
             break;
-        if (!isspace(c)){
-            if (first){
-                c = toupper(c);
-                first = false;
-                putc(c, stdout);
-            }
-            else{
-                c = tolower(c);
-                putc(c, stdout);
-            }
-
+        if (isspace(c)){
+          putc(c, stdout);
+          first = true;
+        }
+        else if (first){
+          putc(toupper(c), stdout);
+          first = false;
         }
         else{
-            putc(c, stdout);
-            first = true;
+          putc(tolower(c), stdout);
         }
     }
     return 0;
 }
 ```
 
+Compared against the Binja decomp:
+
+```c
+int32_t main(int32_t argc, char** argv, char** envp)
+
+char first = 1  // Move one byte into $rbp-0x15
+while (true)
+    int32_t c = getc(fp: stdin)
+    if (c == 0xffffffff)
+        break
+    int64_t c64 = sx.q(c)
+    if ((zx.d(*(*__ctype_b_loc() + c64 + c64)) & 0x2000) != 0)
+        putc(c: c, fp: stdout)
+        first = 1
+    else if (first == 0)
+        putc(c: tolower(c: c), fp: stdout)
+    else
+        putc(c: toupper(c: c), fp: stdout)
+        first = 0
+return 0
+```
 ![score2](./resources/score2.png)
 
 [ctype_b_loc]: https://xuanxuanblingbling.github.io/ctf/pwn/2020/05/19/calc/
