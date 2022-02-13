@@ -2,7 +2,9 @@
 
 ## Introduction
 
-The challenge was to go from the disassembled code to the source code. We were given the compiled executable and the assembly via the web console. The assembly below was what we needed to match:
+The challenge was to go from the disassembled code to the source code. We were 
+given the compiled executable and the assembly via the web console. The 
+assembly below was what we needed to match:
 
 ```asm
 ; This is the disassembly you're trying to reproduce.
@@ -72,7 +74,14 @@ block7:
   ret
 ```
 
-When we looked at the disassembly, we could see that it looped though `getc`'ing user input and capitalized the first character. The tricky part was the use of the ` __ctype_b_loc@plt.sec` in block 2. This function returns an `unsigned short int **` and places the result into `$rax`. The pointer points to an array that stores properties of each character. This is used by the functions in defined in `ctype.h` such as `isalpha` and `isspace`. I found a great guide to the bit mask that each function uses against this properties array on [Github][ctype_b_loc] which I've copied below.
+When we looked at the disassembly, we could see that it looped though 
+`getc`'ing user input and capitalized the first character. The tricky part was 
+the use of the ` __ctype_b_loc@plt.sec` in block 2. This function returns an 
+`unsigned short int **` and places the result into `$rax`. The pointer points 
+to an array that stores properties of each character. This is used by the 
+functions in defined in `ctype.h` such as `isalpha` and `isspace`. I found a 
+great guide to the bit mask that each function uses against this properties 
+array on [Github][ctype_b_loc] which I've copied below.
 
 ```c
 v3 = __ctype_b_loc();
@@ -102,7 +111,11 @@ printf("isblank %d\n", (*v14)[s] & 1);
 return 0;
 ```
 
-The assembly of `baby-c` in block2 `and`'s `$eax` against 0x2000. We took this to mean that the function was comparing the character to a space, as referenced by `isspace` in the table immediately above. Using this, we created the following function which gave us 100% match against the test cases for the program, though the disassembly didn't match.
+The assembly of `baby-c` in block2 `and`'s `$eax` against 0x2000. We took this 
+to mean that the function was comparing the character to a space, as referenced 
+by `isspace` in the table immediately above. Using this, we created the 
+following function which gave us 100% match against the test cases for the 
+program, though the disassembly didn't match.
 
 ```c
 #include <stdio.h>
@@ -143,11 +156,13 @@ int main(void){
 ![score](./resources/score.png)
 
 We noticed there were additional calls to `putc@plt` in the assembly, so we
-added another call inside each conditional. Additionally, we inspected the `je` and
+added another call inside each conditional. Additionally, we inspected the `je` 
+and
 `jmp` instructions and determined that conditional that checked `first` was not
 nested inside of the `isspace()` conditional. The result was the assembly below.
 This was surprisingly close to the Binary Ninja decompiled result, so we should
-have just gone with that. :information_desk_person:
+have just gone with that :information_desk_person:. Unfortunately, we got the
+100% solution after the challenge ended, but it was still fun to figure out!
 
 ```c
 #include <stdio.h>
@@ -189,7 +204,7 @@ Compared against the Binja decomp:
 ```c
 int32_t main(int32_t argc, char** argv, char** envp)
 
-char first = 1  // Move one byte into $rbp-0x15
+char first = 1
 while (true)
     int32_t c = getc(fp: stdin)
     if (c == 0xffffffff)
@@ -205,6 +220,6 @@ while (true)
         first = 0
 return 0
 ```
-![score2](./resources/score2.png)
 
+![score2](./resources/score2.png)
 [ctype_b_loc]: https://xuanxuanblingbling.github.io/ctf/pwn/2020/05/19/calc/
