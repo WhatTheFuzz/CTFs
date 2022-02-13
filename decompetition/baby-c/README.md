@@ -79,9 +79,10 @@ When we looked at the disassembly, we could see that it looped though
 the use of the ` __ctype_b_loc@plt.sec` in block 2. This function returns an 
 `unsigned short int **` and places the result into `$rax`. The pointer points 
 to an array that stores properties of each character. This is used by the 
-functions in defined in `ctype.h` such as `isalpha` and `isspace`. I found a 
+functions in defined in `ctype.h` such as `isalpha` and `isspace`. We found a 
 great guide to the bit mask that each function uses against this properties 
-array on [Github][ctype_b_loc] which I've copied below.
+array on [GitHub](https://xuanxuanblingbling.github.io/ctf/pwn/2020/05/19/calc/)
+which we've copied below.
 
 ```c
 v3 = __ctype_b_loc();
@@ -222,4 +223,3 @@ return 0
 ```
 
 ![score2](./resources/score2.png)
-[ctype_b_loc]: https://xuanxuanblingbling.github.io/ctf/pwn/2020/05/19/calc/
