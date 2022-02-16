@@ -72,20 +72,17 @@ code: [got_hax][got_hax]
 * How a write primitive can be used to escalate privileges/execute arbitrary
 code: [got_hax][got_hax]
 
-#### Describe the purpose and structure of the following ELF linking structures
-and how they can be abused in binary exploitation
+#### Describe the purpose and structure of the following ELF linking structures and how they can be abused in binary exploitation
 
 * Procedural Linkage Table: [got_hax][got_hax]
 * Global Offset Table: [got_hax][got_hax]
 
-#### Describe the following dynamic relocation modes in terms of PLT/GOT data
-structure interaction, and how exploitation primitives differ between them
+#### Describe the following dynamic relocation modes in terms of PLT/GOT data structure interaction, and how exploitation primitives differ between them
 
 * Partial RELRO: [got_hax][got_hax]
 * Full RELRO: [got_hax][got_hax]
 
-#### Describe the purpose and use of return oriented programming (ROP)/jump
-oriented programming (JOP)
+#### Describe the purpose and use of return oriented programming (ROP)/jump oriented programming (JOP)
 
 * How can ROP/JOP be used to evade ASLR/NX: [heres-a-libc][heres-a-libc],
 [guessing-game-1][guessing-game-1]
@@ -122,8 +119,7 @@ oriented programming (JOP)
 * Static reverse engineering
 * Dynamic reverse engineering: [heres-a-libc][heres-a-libc]
 
-#### Demonstrate familiarity in using the following types of tools to perform
-static and dynamic reverse engineering
+#### Demonstrate familiarity in using the following types of tools to perform static and dynamic reverse engineering
 
 * Static disassemblers
 * Debuggers
