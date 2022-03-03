@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 '''
 WhatTheFuzz's submission for the 247CTF challenge angr-y binary.
 
@@ -25,6 +24,7 @@ KEY_LEN = 20
 ADDR_NO_FLAG = 0x08048609
 ADDR_PRINT_FLAG = 0x080485ea
 
+
 def connection():
     '''Establish the connection to the process, local or remote.
     '''
@@ -45,16 +45,14 @@ def get_password():
     # Create an angr project.
     project = angr.Project(exe.path)
 
-    # We can tell from Ghidra that the user input comes from `scanf(%20s)`. Thus we know the size of our input.
-    flag_chars = [claripy.BVS('flag_char_%d' % i, 8) for i in range(KEY_LEN)]
+    # We can tell from Ghidra that the user input comes from `scanf(%20s)`.
+    # Thus we know the size of our input.
+    flag_chars = [claripy.BVS(f'flag_char_{i}', 8) for i in range(KEY_LEN)]
     flag = claripy.Concat(*flag_chars)
 
     # Create the initial state and pass in the symbolic input.
     initial_state = project.factory.full_init_state(
-                                                    args=[exe.path],
-                                                    add_options=angr.options.unicorn,
-                                                    stdin=flag
-                                                    )
+        args=[exe.path], add_options=angr.options.unicorn, stdin=flag)
 
     # Constrain the characters to be not null and not newline characters.
     for j in flag_chars:
@@ -73,9 +71,9 @@ def get_password():
         password = sol_state.solver.eval(flag, cast_to=bytes)
         log.success(f'The password is: {password}')
         return password
-    else:
-        log.error('Password not found.')
-        return None
+    log.error('Password not found.')
+    return None
+
 
 def main():
     '''Return the flag.
