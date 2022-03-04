@@ -94,7 +94,11 @@ It looks like we can just use a debugger and break on `strcmp` and see what the 
 
 If we set a breakpoint on `strcmp`, we hit it a bunch of times because the dynamic linker uses it to link in our libraries. This isn't what we want. We want to break on the specific time `strcmp` is called within `main`. `main` isn't a defined symbol and the program is position independent, so we can't just break on an address. The solution is that we break on `strcmp@plt` which will contain the address that our function has for `strcmp` (pointing to the GOT) before it has been resolved by the dynamic linker. This will instantly illuminate the password if we check out the arguments $rdi and $rsi (this is amd64, so those are the arguments used for fastcalls).
 
-In the GDB output below, we see that our input in $rdi, `test`, is compared to $rsi, `141c85ccfb2ae19d8d8c224c4e403dce`. The latter is the password. Let's try it:
+In the GDB output below, we see that our input in $rdi, `test`, is compared to $rsi, `141c85ccfb2ae19d8d8c224c4e403dce`. The latter is the password.
+
+![gdb](./resources/gdb.png)
+
+ Let's try it:
 
 ```sh
 $ ./encrypted_password
