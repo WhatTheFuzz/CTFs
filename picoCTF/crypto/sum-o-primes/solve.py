@@ -8,10 +8,7 @@ python3 ./solve.py
 
 import z3
 import binascii
-from pwn import *
-
-context.log_level = 'info'
-context.terminal = ['gnome-terminal', '-e']
+from pwn import log, math
 
 
 def main():
@@ -47,6 +44,7 @@ def main():
     d = pow(e, -1, m)
     flag = hex(pow(c, d, n))
 
+    # Convert from hex to ascii. Skip the first two bytes because they're '0x'.
     flag = binascii.unhexlify(flag[2:])
     log.success(f'The flag is: {flag}')
 
