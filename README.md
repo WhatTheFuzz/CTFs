@@ -31,6 +31,8 @@ space layout randomization (ASLR), Non-eXecutable memory (NX), and stack
 canaries:
   * [clutter-overflow][clutter-overflow]
   * [heres-a-libc][heres-a-libc]
+  * [hidden-flag-function][hidden-flag-function]
+  * [hidden-flag-function-parameters][hidden-flag-function-parameters]
 * Heap buffer overflow using heap grooming and objects with function pointers:
   * [are-you-root][are-you-root]
 * Heap buffer overflow by corrupting heap data structures:
@@ -133,4 +135,6 @@ code:
 [level-1]: random-pwnables/level-1/
 [guessing-game-1]: picoCTF/binary-exploitation/guessing-game-1/
 [baby-c]: decompetition/baby-c/
+[hidden-flag-function]: 247CTF/pwnable/hidden-flag-function/
+[hidden-flag-function-parameters]: 247CTF/pwnable/hidden-flag-function-parameters
 [executable-stacks]: https://www.airs.com/blog/archives/518
