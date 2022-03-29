@@ -2,7 +2,8 @@
 
 ## Introduction
 
-`hidden-flag-function-parameters` is a 130 point binary-exploitation challenge from
+`hidden-flag-function-parameters` is a 130 point binary-exploitation challenge
+from
 247CTF. The description states:
 
 > Can you control this applications flow to gain access to the hidden flag
@@ -27,7 +28,8 @@ $ checksec hidden_flag_function_with_args
 
 ### Static Analysis
 
-We found a function called `flag` that checks the input parameters to open and read the flag from `flag.txt`:
+We found a function called `flag` that checks the input parameters to open and
+read the flag from `flag.txt`:
 
 ```c
 void flag(int32_t arg1, int32_t arg2, int32_t arg3)
@@ -51,12 +53,17 @@ int32_t chall()
 }
 ```
 
-Looks like we have our classic buffer overflow into `buf`. This time we just need to add our arguments to the stack in order for them to be popped off and interpreted by `chall` as the parameters to our function.
-
+Looks like we have our classic buffer overflow into `buf`. This time we just
+need to add our arguments to the stack in order for them to be popped off and
+interpreted by `chall` as the parameters to our function.
 
 ## Solution
 
-The solution is really the same as the previous challenge, `hidden-flag-function`, but we need to pass arguments to the function. This occurs after we're overwritten then return address of `chall` to point to `flag`. We then push our values to the stack in reverse order (as interpreted by the stack), and call `chall` with the parameters like so:
+The solution is really the same as the previous challenge,
+`hidden-flag-function`, but we need to pass arguments to the function. This
+occurs after we're overwritten then return address of `chall` to point to
+`flag`. We then push our values to the stack in reverse order (as interpreted
+by the stack), and call `chall` with the parameters like so:
 
 ```python
 # Create the payload.
@@ -69,6 +76,5 @@ payload = fit({
 })
 ```
 
-Sending this to the remote server grants us the flag: `247CTF{da70c8d41fc43fc59cf04f4e591c9ad6}`
-
-
+Sending this to the remote server grants us the flag:
+`247CTF{da70c8d41fc43fc59cf04f4e591c9ad6}`
