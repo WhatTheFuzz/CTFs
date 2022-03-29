@@ -31,6 +31,7 @@ space layout randomization (ASLR), Non-eXecutable memory (NX), and stack
 canaries:
   * [clutter-overflow][clutter-overflow]
   * [heres-a-libc][heres-a-libc]
+  * [stack-cache][stack-cache]
 * Heap buffer overflow using heap grooming and objects with function pointers:
   * [are-you-root][are-you-root]
 * Heap buffer overflow by corrupting heap data structures:
@@ -43,8 +44,10 @@ canaries:
 * Format string vulnerabilities for arbitrary read/write primitive:
   * [stonks][stonks]
   * [got_hax][got_hax]
+  * [flag-leak][flag-leak]
 * How uninitialized variables can be used for exploitation:
   * [are-you-root][are-you-root]
+  * [stack-cache][stack-cache]
 
 #### Demonstrate the ability to implement exploitation primitives
 
@@ -133,4 +136,6 @@ code:
 [level-1]: random-pwnables/level-1/
 [guessing-game-1]: picoCTF/binary-exploitation/guessing-game-1/
 [baby-c]: decompetition/baby-c/
+[flag-leak]: picoCTF/binary-exploitation/flag-leak/
+[stack-cache]: picoCTF/binary-exploitation/stack-cache/
 [executable-stacks]: https://www.airs.com/blog/archives/518
