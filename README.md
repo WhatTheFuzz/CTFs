@@ -105,14 +105,18 @@ code:
 
 * Static reverse engineering:
   * [baby-c][baby-c]
+  * [wizardlike][wizardlike]
 * Dynamic reverse engineering:
   * [heres-a-libc][heres-a-libc]
+  * [wizardlike][wizardlike]
 
 #### Demonstrate familiarity in using the following types of tools to perform static and dynamic reverse engineering
 
 * Static disassemblers
   * [baby-c][baby-c]
+  * [wizardlike][wizardlike]
 * Debuggers
+  * [wizardlike][wizardlike]
 * Automation techniques using above tools
 
 #### Fuzzing techniques
@@ -120,8 +124,10 @@ code:
 * Dumb fuzzing techniques
 * Code-coverage based fuzzing
 * Symbolic execution
+  * [sum-o-primes][sum-o-primes]
 
 ## CTF Blog Posts That I Find Useful
+
 * [Executable Stacks][executable-stacks]
 
 [youtube]: https://www.youtube.com/channel/UC6VD4gYf2a6_0hwidZ9PjFA
@@ -138,4 +144,7 @@ code:
 [baby-c]: decompetition/baby-c/
 [flag-leak]: picoCTF/binary-exploitation/flag-leak/
 [stack-cache]: picoCTF/binary-exploitation/stack-cache/
+[wizardlike]: picoCTF/reversing/wizardlike/
+[sum-o-primes]: picoCTF/crypto/sum-o-primes/
+
 [executable-stacks]: https://www.airs.com/blog/archives/518
