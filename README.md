@@ -31,6 +31,7 @@ space layout randomization (ASLR), Non-eXecutable memory (NX), and stack
 canaries:
   * [clutter-overflow][clutter-overflow]
   * [heres-a-libc][heres-a-libc]
+  * [stack-cache][stack-cache]
   * [hidden-flag-function][hidden-flag-function]
   * [hidden-flag-function-parameters][hidden-flag-function-parameters]
 * Heap buffer overflow using heap grooming and objects with function pointers:
@@ -45,8 +46,10 @@ canaries:
 * Format string vulnerabilities for arbitrary read/write primitive:
   * [stonks][stonks]
   * [got_hax][got_hax]
+  * [flag-leak][flag-leak]
 * How uninitialized variables can be used for exploitation:
   * [are-you-root][are-you-root]
+  * [stack-cache][stack-cache]
 
 #### Demonstrate the ability to implement exploitation primitives
 
@@ -104,14 +107,18 @@ code:
 
 * Static reverse engineering:
   * [baby-c][baby-c]
+  * [wizardlike][wizardlike]
 * Dynamic reverse engineering:
   * [heres-a-libc][heres-a-libc]
+  * [wizardlike][wizardlike]
 
 #### Demonstrate familiarity in using the following types of tools to perform static and dynamic reverse engineering
 
 * Static disassemblers
   * [baby-c][baby-c]
+  * [wizardlike][wizardlike]
 * Debuggers
+  * [wizardlike][wizardlike]
 * Automation techniques using above tools
 
 #### Fuzzing techniques
@@ -119,8 +126,10 @@ code:
 * Dumb fuzzing techniques
 * Code-coverage based fuzzing
 * Symbolic execution
+  * [sum-o-primes][sum-o-primes]
 
 ## CTF Blog Posts That I Find Useful
+
 * [Executable Stacks][executable-stacks]
 
 [youtube]: https://www.youtube.com/channel/UC6VD4gYf2a6_0hwidZ9PjFA
@@ -135,6 +144,11 @@ code:
 [level-1]: random-pwnables/level-1/
 [guessing-game-1]: picoCTF/binary-exploitation/guessing-game-1/
 [baby-c]: decompetition/baby-c/
+[flag-leak]: picoCTF/binary-exploitation/flag-leak/
+[stack-cache]: picoCTF/binary-exploitation/stack-cache/
+[wizardlike]: picoCTF/reversing/wizardlike/
+[sum-o-primes]: picoCTF/crypto/sum-o-primes/
 [hidden-flag-function]: 247CTF/pwnable/hidden-flag-function/
 [hidden-flag-function-parameters]: 247CTF/pwnable/hidden-flag-function-parameters
+
 [executable-stacks]: https://www.airs.com/blog/archives/518
