@@ -25,7 +25,7 @@ context.delete_corefiles = True
 
 def get_offset():
     '''Return the offset from where our input is stored on the stack to the
-return address.
+    return address.
     '''
 
     with process([exe.path]) as io:

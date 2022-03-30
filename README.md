@@ -32,6 +32,8 @@ canaries:
   * [clutter-overflow][clutter-overflow]
   * [heres-a-libc][heres-a-libc]
   * [stack-cache][stack-cache]
+  * [hidden-flag-function][hidden-flag-function]
+  * [hidden-flag-function-parameters][hidden-flag-function-parameters]
 * Heap buffer overflow using heap grooming and objects with function pointers:
   * [are-you-root][are-you-root]
 * Heap buffer overflow by corrupting heap data structures:
@@ -146,5 +148,7 @@ code:
 [stack-cache]: picoCTF/binary-exploitation/stack-cache/
 [wizardlike]: picoCTF/reversing/wizardlike/
 [sum-o-primes]: picoCTF/crypto/sum-o-primes/
+[hidden-flag-function]: 247CTF/pwnable/hidden-flag-function/
+[hidden-flag-function-parameters]: 247CTF/pwnable/hidden-flag-function-parameters
 
 [executable-stacks]: https://www.airs.com/blog/archives/518
